@@ -14,9 +14,25 @@ app.get('/', function (req, res) {
 	res.sendfile(__dirname + '/index.html');
 });
 
+
 io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
+
+	socket.get('nickname', function (err, name) {
+		console.log(name);
+	});
+
+	socket.on('set nickname', function (data) {
+		socket.set('nickname', data.nickname, function () {
+			socket.emit('ready');
+		});
+	});
+
+	socket.on('chat message', function (data) {
+		socket.get('nickname', function (err, name) {
+			console.log('Chat message by', name, ':', data.contents);
+			io.sockets.emit('chat message', { 'author' : name, 'contents' : data.contents });
+			//Could also put messages into session - for when a new user joins mid-conversation
+		});
+	});
+
 });
