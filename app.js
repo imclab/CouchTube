@@ -7,7 +7,7 @@ app.configure(function() {
 	app.use(express.static(__dirname + '/public'));
 });
 
-server.listen(80);
+server.listen(3000);
 
 
 app.get('/', function (req, res) {
@@ -21,9 +21,21 @@ io.sockets.on('connection', function (socket) {
 		console.log(name);
 	});
 
+	//Todo: check username isnt just spaces
 	socket.on('set nickname', function (data) {
-		socket.set('nickname', data.nickname, function () {
-			socket.emit('ready');
+		//if set, broadcast change
+		socket.get('nickname', function (err, name) {
+			if (name === null) {
+				socket.set('nickname', data.nickname, function () {
+					socket.emit('ready');
+				});
+			} else {
+				io.sockets.emit('nick change', { 'old_name' : name, 'new_name' : data.nickname } );
+
+				socket.set('nickname', data.nickname, function () {
+					socket.emit('ready');
+				});
+			}
 		});
 	});
 

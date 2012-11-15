@@ -4,14 +4,15 @@ $(document).ready(function() {
 		textInput = $('#chat-text .contents'),
 		socket = io.connect('http://localhost');
 	
-	socket.on('ready', function (data) {
-		//Lock form by default (loading state), unlock it here.
-		//Check for sessionStorage "nickname", emit automatically if found.
-	});
 
-	socket.on('chat message', function(data) {
-		$('body').append('<p>'+data.author+' - '+data.contents+'</p>');
-	});
+	//Check if nickname is stored in session, emit on init if found.
+	var session_nickname = sessionStorage.getItem('nickname');
+	if (session_nickname !== null) {
+		socket.emit('set nickname', { nickname : session_nickname });
+		hideNickNameForm();
+	}
+
+	/* DOM Events */
 
 	$('#chat-text').submit(function(e) {
 		e.preventDefault();
@@ -24,12 +25,45 @@ $(document).ready(function() {
 
 		var nickname = nicknameInput.val();
 		socket.emit('set nickname', { nickname : nickname });
-		$('#nickname-set').hide();
-		$('#chat-text').show();
+		hideNickNameForm();
 		//show nickname somewhere
 		//& set user's nickname in cookie. emit nickname automatically if detected in cookie.
 		//& remember to update cookie when users edits nickname.
 		sessionStorage.setItem("nickname", nickname);
 	});
+
+	$('#nickname-toggle').click(function(e) {
+		e.preventDefault();
+		toggleNickNameForm();
+	});
+
+
+
+	/* Socket Events */
+
+	socket.on('ready', function (data) {
+		//Disable chat input until this fires (this fires after nickname has been set).
+	});
+
+	socket.on('chat message', function(data) {
+		$('#chat').append('<p>'+data.author+' - '+data.contents+'</p>');
+	});
+
+	socket.on('nick change', function(data) {
+		$('#chat').append('<p>'+data.old_name+' changed their nickname to '+data.new_name+'</p>');
+	});
+
+
+	
+	/* DOM utilities */
+
+	function hideNickNameForm() {
+		$('#nickname-set').hide();
+		$('#chat-text').show();
+	}
+
+	function toggleNickNameForm() {
+		$('#nickname-set').toggle();
+	}
 
 });
