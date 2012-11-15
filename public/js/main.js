@@ -2,7 +2,11 @@ $(document).ready(function() {
 
 	var nicknameInput = $('#nickname-set .contents'),
 		textInput = $('#chat-text .contents'),
-		socket = io.connect('http://localhost');
+		socket = io.connect('http://localhost'),
+		chat_message_template = $('#chat-message-template').html(),
+		user_joined_template = $('#user-joined-template').html(),
+		user_left_template = $('#user-left-template').html(),
+		nick_change_template = $('#nick-change-template').html();
 	
 
 	//Check if nickname is stored in session, emit on init if found.
@@ -22,13 +26,12 @@ $(document).ready(function() {
 
 	$('#nickname-set').submit(function(e) {
 		e.preventDefault();
+		$('#nickname-set .invalid').hide();
 
 		var nickname = nicknameInput.val();
 		socket.emit('set nickname', { nickname : nickname });
 		hideNickNameForm();
 		//show nickname somewhere
-		//& set user's nickname in cookie. emit nickname automatically if detected in cookie.
-		//& remember to update cookie when users edits nickname.
 		sessionStorage.setItem("nickname", nickname);
 	});
 
@@ -42,21 +45,81 @@ $(document).ready(function() {
 		window.open($(e.currentTarget).attr('href'));
 	});
 
+	$('header textarea').click(function(e) {
+		$(this).select();
+	});
+
 
 
 	/* Socket Events */
 
+	socket.on('room_init', function(data) {
+		var currentRoomID = sessionStorage.getItem("roomID");
+		if (currentRoomID !== null && (currentRoomID !== data.roomID)) {
+			socket.emit('room_leave', { 'roomID' : currentRoomID } );
+		}
+		sessionStorage.setItem("roomID", data.roomID);
+		socket.emit('room_join', { 'roomID' : data.roomID } );
+	});
+
 	socket.on('ready', function (data) {
+		$('header textarea').val(window.location.href);
 		//Disable chat input until this fires (this fires after nickname has been set).
 	});
 
+	socket.on('invalid nickname', function() {
+		$('#nickname-set .invalid').show();
+		showNickNameForm();
+	});
+
+	socket.on('user joined', function(data) {
+		populatedTemplate = _.template(user_joined_template,
+			{
+				'author' : data.author
+			}
+		);
+
+		$('#chat').append(populatedTemplate);
+		chatScrollToBottom();
+	});
+
+	socket.on('user left', function(data) {
+		populatedTemplate = _.template(user_left_template,
+			{
+				'author' : data.author
+			}
+		);
+
+		$('#chat').append(populatedTemplate);
+		chatScrollToBottom();
+	});
+
+	//style differently if sent by this user
 	socket.on('chat message', function(data) {
 		var linkifiedContents = linkify(data.contents);
-		$('#chat').append('<p>'+data.author+' - '+linkifiedContents+'</p>');
+		populatedTemplate = _.template(chat_message_template,
+			{
+				'author' : data.author,
+				'contents' : linkifiedContents,
+				'room_id' : data.room_id
+			}
+		);
+
+		$('#chat').append(populatedTemplate);
+		chatScrollToBottom();
 	});
 
 	socket.on('nick change', function(data) {
-		$('#chat').append('<p>'+data.old_name+' changed their nickname to '+data.new_name+'</p>');
+
+		populatedTemplate = _.template(nick_change_template,
+			{
+				'old_name' : data.old_name,
+				'new_name' : data.new_name
+			}
+		);
+
+		$('#chat').append(populatedTemplate);
+		chatScrollToBottom();
 	});
 
 
@@ -68,8 +131,16 @@ $(document).ready(function() {
 		$('#chat-text').show();
 	}
 
+	function showNickNameForm() {
+		$('#nickname-set').show();
+	}
+
 	function toggleNickNameForm() {
 		$('#nickname-set').toggle();
+	}
+
+	function chatScrollToBottom() {
+		$('#chat').scrollTop(document.getElementById('chat').scrollHeight);
 	}
 
 });
