@@ -37,6 +37,11 @@ $(document).ready(function() {
 		toggleNickNameForm();
 	});
 
+	$('#chat a').live('click', function(e) {
+		e.preventDefault();
+		window.open($(e.currentTarget).attr('href'));
+	});
+
 
 
 	/* Socket Events */
@@ -46,7 +51,8 @@ $(document).ready(function() {
 	});
 
 	socket.on('chat message', function(data) {
-		$('#chat').append('<p>'+data.author+' - '+data.contents+'</p>');
+		var linkifiedContents = linkify(data.contents);
+		$('#chat').append('<p>'+data.author+' - '+linkifiedContents+'</p>');
 	});
 
 	socket.on('nick change', function(data) {
