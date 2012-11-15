@@ -1,7 +1,8 @@
 var	express = require('express'),
 	app = require('express')(),
 	server = require('http').createServer(app),
-	io = require('socket.io').listen(server);
+	io = require('socket.io').listen(server),
+	sanitize = require('validator').sanitize;
 
 app.configure(function() {
 	app.use(express.static(__dirname + '/public'));
@@ -17,22 +18,20 @@ app.get('/', function (req, res) {
 
 io.sockets.on('connection', function (socket) {
 
-	socket.get('nickname', function (err, name) {
-		console.log(name);
-	});
-
-	//Todo: check username isnt just spaces
+	//Todo: check username isnt just spaces / a full stop etc
 	socket.on('set nickname', function (data) {
 		//if set, broadcast change
 		socket.get('nickname', function (err, name) {
+			var cleanNickname = sanitize(data.nickname).xss();
+
 			if (name === null) {
-				socket.set('nickname', data.nickname, function () {
+				socket.set('nickname', cleanNickname, function () {
 					socket.emit('ready');
 				});
 			} else {
-				io.sockets.emit('nick change', { 'old_name' : name, 'new_name' : data.nickname } );
+				io.sockets.emit('nick change', { 'old_name' : name, 'new_name' : cleanNickname } );
 
-				socket.set('nickname', data.nickname, function () {
+				socket.set('nickname', cleanNickname, function () {
 					socket.emit('ready');
 				});
 			}
@@ -42,7 +41,7 @@ io.sockets.on('connection', function (socket) {
 	socket.on('chat message', function (data) {
 		socket.get('nickname', function (err, name) {
 			console.log('Chat message by', name, ':', data.contents);
-			io.sockets.emit('chat message', { 'author' : name, 'contents' : data.contents });
+			io.sockets.emit('chat message', { 'author' : name, 'contents' : sanitize(data.contents).xss() });
 			//Could also put messages into session - for when a new user joins mid-conversation
 		});
 	});
