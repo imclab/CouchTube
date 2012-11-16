@@ -39,6 +39,7 @@ input {
 #chat li {
     margin: 5px 0;
     font-size: 12px;
+    word-wrap: break-word;
 }
 
 #chat li .nickname {

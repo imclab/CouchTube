@@ -36,9 +36,6 @@ app.get('/room/*', function (req, res) {
 io.sockets.on('connection', function (socket) {
 
 	//Todo:
-	//	Check username isnt just spaces / a full stop etc
-	//	For sanitize / check fails; return an error, dont use substituted strings
-	//	Implement chat history & restore
 	//	Only broadcast `user joined` if user wasn't already in room
 	//		--> Need manageable list of users in room, suggest just an array using room id as index
 
@@ -51,16 +48,23 @@ io.sockets.on('connection', function (socket) {
 		if (typeof(chatHistories[data.roomID]) === "undefined") {
 			chatHistories[data.roomID] = [];
 		} else {
-			io.sockets.in(data.roomID).emit('message history', chatHistories[data.roomID]);
+			socket.emit('message history', chatHistories[data.roomID]);
 		}
 	});
 
 	//Also trigger this when someone just closes the window / direct disconnects
 	socket.on('room_leave', function(data) {
 		socket.get('nickname', function (err, name) {
-			console.log('somebody left', data.roomID);
 			io.sockets.in(data.roomID).emit('user left', { 'author' : name });
 			socket.leave(data.roomID);
+		});
+	});
+
+	socket.on('disconnect', function(data) {
+		socket.get('room_id', function(err, id) {
+			socket.get('nickname', function (err, name) {
+				io.sockets.in(id).emit('user left', { 'author' : name });
+			});
 		});
 	});
 
