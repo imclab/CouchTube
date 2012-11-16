@@ -11,25 +11,29 @@ __root = __dirname + '/public';
 
 app.configure(function() {
 	app.use(express.static('public'));
+	app.use(express.logger());
+    app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
 
 server.listen(3000);
 
 
-app.get('/', function (req, res) {
-	res.sendfile('index.html');
+app.get('/room', function(req, res) {
+	console.log(req);
 });
 
 app.get('/room/new', function (req, res) {
-	//Todo: store recent room names in cookie, display on homepage? In case user accidently leaves
-	//Empty rooms may get auto deleted by socketio, but if user goes back, initiate it as a new room with same ID
 	var randomID = Math.round(Math.random()*10000000000).toString(36);
 	res.redirect('/room/'+randomID);
 });
 
-app.get('/room/*', function (req, res) {
+app.get('/room/:id', function (req, res) {
 	res.sendfile(__root + '/room/index.html');
-	roomID = req.params[0];
+	roomID = req.params.id;
+});
+
+app.get('/', function (req, res) {
+	res.sendfile('index.html');
 });
 
 

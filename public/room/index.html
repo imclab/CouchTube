@@ -16,6 +16,15 @@
         <script src="../js/vendor/modernizr-2.6.1.min.js"></script>
     </head>
     <body>
+        <script>
+        (function() {
+            var rmid = window.location.pathname.replace('/room/', '');
+            if (rmid === "") {
+                window.location.replace(window.location.protocol + "//" + window.location.host +"/");
+            }
+        })();
+        </script>
+
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
         <![endif]-->
