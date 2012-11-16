@@ -4,6 +4,7 @@ $(document).ready(function() {
 		textInput = $('#chat-text .contents'),
 		socket = io.connect('http://localhost'),
 		chat_message_template = $('#chat-message-template').html(),
+		chat_messages_template = $('#chat-messages-template').html(),
 		user_joined_template = $('#user-joined-template').html(),
 		user_left_template = $('#user-left-template').html(),
 		nick_change_template = $('#nick-change-template').html();
@@ -26,6 +27,11 @@ $(document).ready(function() {
 
 	$('#nickname-set').submit(function(e) {
 		e.preventDefault();
+
+		if (nicknameInput.val().length < 3) {
+			$('#nickname-set .invalid').show();
+			return;
+		}
 
 		$('#nickname-set .invalid').hide();
 
@@ -95,6 +101,17 @@ $(document).ready(function() {
 		populatedTemplate = _.template(user_left_template,
 			{
 				'author' : data.author
+			}
+		);
+
+		$('#chat').append(populatedTemplate);
+		chatScrollToBottom();
+	});
+
+	socket.on('message history', function(data) {
+		populatedTemplate = _.template(chat_messages_template,
+			{
+				'messages' : data
 			}
 		);
 

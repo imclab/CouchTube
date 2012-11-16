@@ -4,7 +4,8 @@ var	express = require('express'),
 	io = require('socket.io').listen(server),
 	sanitize = require('validator').sanitize,
 	check = require('validator').check,
-	roomID = null;
+	roomID = null,
+	chatHistories = {};
 
 __root = __dirname + '/public';
 
@@ -46,6 +47,12 @@ io.sockets.on('connection', function (socket) {
 	socket.on('room_join', function(data) {
 		socket.join(data.roomID);
 		socket.set('room_id', data.roomID);
+
+		if (typeof(chatHistories[data.roomID]) === "undefined") {
+			chatHistories[data.roomID] = [];
+		} else {
+			io.sockets.in(data.roomID).emit('message history', chatHistories[data.roomID]);
+		}
 	});
 
 	//Also trigger this when someone just closes the window / direct disconnects
@@ -78,6 +85,7 @@ io.sockets.on('connection', function (socket) {
 					socket.set('nickname', cleanNickname, function () {
 						io.sockets.in(socketRoomID).emit('user joined', { 'author' : cleanNickname });
 						socket.emit('ready');
+						
 					});
 				} else {
 					io.sockets.in(socketRoomID).emit('nick change', { 'old_name' : name, 'new_name' : cleanNickname } );
@@ -104,14 +112,16 @@ io.sockets.on('connection', function (socket) {
 
 			socket.get('nickname', function (err, name) {
 
-				io.sockets.in(socketRoomID).emit('chat message',
-					{
-						'author' : name,
-						'contents' : strip_tags(sanitize(data.contents).xss().trim()),
-						'room_id' : socketRoomID
-					});
+				var this_msg = {
+					'author' : name,
+					'contents' : strip_tags(sanitize(data.contents).xss().trim()),
+					'room_id' : socketRoomID
+				};
 
-				//Also put messages into session - for when a new user joins mid-conversation
+				io.sockets.in(socketRoomID).emit('chat message', this_msg);
+
+				//Also put messages into session - for restoring room messages when a new user joins mid-conversation (or hard refresh etc)
+				chatHistories[socketRoomID].push(this_msg);
 
 			});
 

@@ -51,9 +51,9 @@
                 <div class="left">
 
                     <form id="nickname-set" action="" class="form-inline">
-                        <div class="notice invalid">Nickname is invalid - please enter at least 3 characters.</div>
                         <input type="text" placeholder="Set nickname.." class="contents"/>
                         <input type="submit" value="Set Nickname" class="btn btn-inverse"/>
+                        <div class="notice invalid">Nickname is invalid - please enter at least 3 characters.</div>
                     </form>
 
                     <form id="chat-text" action="" class="form-inline">
@@ -80,6 +80,16 @@
                 <span class="message"><%= contents %></span>
                 <span class="debug"><%= room_id %></span>
             </li>
+        </script>
+
+        <script id="chat-messages-template" type="text/underscore-template">
+            <% _.each(messages, function(message) { %>
+                <li>
+                    <span class="nickname"><%= message.author %></span>
+                    <span class="message"><%= message.contents %></span>
+                    <span class="debug"><%= message.room_id %></span>
+                </li>
+            <% }); %>
         </script>
 
         <script id="user-joined-template" type="text/underscore-template">

@@ -118,3 +118,9 @@ header h1 {
 #cancel-nickname {
     display: none;
 }
+
+#nickname-set .invalid {
+    font-size: 12px;
+    margin-top: 10px;
+    color: red;
+}
