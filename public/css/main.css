@@ -9,34 +9,69 @@
 
 body {
     width: 760px;
-    margin: 50px auto;
+    margin: 20px auto;
+    font-family: 'Open Sans', sans-serif;
+}
+
+form {margin:0;}
+
+input {
+    font-family: 'Open Sans', sans-serif;
 }
 
 #main {
     border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 10px;
+    overflow: hidden;
 }
 
 #chat {
-    padding: 0;
     list-style: none;
-    max-height: 175px;
+    max-height: 140px;
+    height: 140px;
     overflow-y: auto;
-    margin-left: 0;
+    margin:  5px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 5px 0;
+    -webkit-mask-image: -webkit-gradient(linear, left 15%, left 0, from(rgba(0,0,0,1)), to(rgba(0,0,0,0.2)));
 }
 
 #chat li {
     margin: 5px 0;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 #chat li .nickname {
     font-weight: bold;
 }
 
+#chat li i {
+    color: #999;
+}
+
 #top {
     width: 740px;
     overflow: hidden;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+
+#bottom {
+    overflow: hidden;
+}
+
+#bottom .left, #bottom .right {
+    float: left;
+    width: 50%;
+    overflow: hidden;
+}
+
+#chat-text input[type="text"] {
+    width: 270px;
+}
+
+#bottom .right {
+    text-align: right;
+    line-height: 30px;
 }
 
 #youtube, #room_list {
@@ -50,7 +85,13 @@ body {
 
 #room_list {
     width: 170px;
+    padding-left: 10px;
     overflow: hidden;
+}
+
+#room_list ul {
+    list-style: none;
+    margin: 0;
 }
 
 header textarea {
@@ -61,5 +102,19 @@ header textarea {
     width: 250px;
     text-align: center;
     resize: none;
-    font-style: italic;
+    font-size: 10px;
+    font-family: 'Lucida Console', 'Arial';
+}
+
+header h1 {
+    font-size: 28px;
+    margin-bottom: 0;
+}
+
+#nickname-toggle, #cancel-nickname {
+    font-size: 11px;
+}
+
+#cancel-nickname {
+    display: none;
 }

@@ -7,6 +7,8 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+
         <link rel="stylesheet" href="../css/normalize.min.css">
         <link rel="stylesheet" href="../css/bootstrap.min.css">
         <link rel="stylesheet" href="../css/main.css">
@@ -44,18 +46,31 @@
 
             <ul id="chat"></ul>
 
-            <a href="#" id="nickname-toggle">Set nickname</a>
-            <form id="nickname-set" action="" class="form-inline">
-                <div class="notice invalid">Nickname is invalid - please enter at least 3 characters.</div>
-                <input type="text" placeholder="Set nickname.." class="contents"/>
-                <input type="submit" value="Submit" class="btn"/>
-            </form>
-            
+            <div id="bottom">
 
-            <form id="chat-text" action="" class="form-inline">
-                <input type="text" placeholder="Send message.." class="contents"/>
-                <input type="submit" value="Submit" class="btn"/>
-            </form>
+                <div class="left">
+
+                    <form id="nickname-set" action="" class="form-inline">
+                        <div class="notice invalid">Nickname is invalid - please enter at least 3 characters.</div>
+                        <input type="text" placeholder="Set nickname.." class="contents"/>
+                        <input type="submit" value="Set Nickname" class="btn btn-inverse"/>
+                    </form>
+
+                    <form id="chat-text" action="" class="form-inline">
+                        <input type="text" placeholder="Send message.." class="contents"/>
+                        <input type="submit" value="Send" class="btn"/>
+                    </form>
+
+                </div>
+
+                <div class="right">
+
+                    <a href="#" id="nickname-toggle">Set nickname</a>
+                    <a href="#" id="cancel-nickname">Cancel</a>
+
+                </div>
+
+            </div>
 
         </div>
 

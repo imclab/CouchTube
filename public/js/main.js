@@ -26,18 +26,26 @@ $(document).ready(function() {
 
 	$('#nickname-set').submit(function(e) {
 		e.preventDefault();
+
 		$('#nickname-set .invalid').hide();
 
 		var nickname = nicknameInput.val();
 		socket.emit('set nickname', { nickname : nickname });
-		hideNickNameForm();
-		//show nickname somewhere
+
+		setNicknameFormTo("hide");
+
+		//Todo: show nickname somewhere
 		sessionStorage.setItem("nickname", nickname);
 	});
 
 	$('#nickname-toggle').click(function(e) {
 		e.preventDefault();
-		toggleNickNameForm();
+		setNicknameFormTo("show");
+	});
+
+	$('#cancel-nickname').click(function(e) {
+		e.preventDefault();
+		setNicknameFormTo("hide");
 	});
 
 	$('#chat a').live('click', function(e) {
@@ -141,6 +149,32 @@ $(document).ready(function() {
 
 	function chatScrollToBottom() {
 		$('#chat').scrollTop(document.getElementById('chat').scrollHeight);
+	}
+
+	function hideChatMessageForm() {
+		$('#chat-text').hide();
+	}
+
+	function showChatMessageForm() {
+		$('#chat-text').show();
+	}
+
+	function setNicknameFormTo(state) {
+		if (state === "show") {
+
+			showNickNameForm();
+			hideChatMessageForm();
+			$('#nickname-toggle').hide()
+			$('#cancel-nickname').show();
+
+		} else if (state === "hide") {
+
+			hideNickNameForm();
+			showChatMessageForm();
+			$('#nickname-toggle').show()
+			$('#cancel-nickname').hide();
+
+		}
 	}
 
 });
