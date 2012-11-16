@@ -7,6 +7,10 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
+        <script>
+        (function(){var e=window.location.pathname.replace("/room/","");if(e===""){window.location.replace(window.location.protocol+"//"+window.location.host+"/")}})()
+        </script>
+
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
 
         <link rel="stylesheet" href="../css/normalize.min.css">
@@ -16,14 +20,6 @@
         <script src="../js/vendor/modernizr-2.6.1.min.js"></script>
     </head>
     <body>
-        <script>
-        (function() {
-            var rmid = window.location.pathname.replace('/room/', '');
-            if (rmid === "") {
-                window.location.replace(window.location.protocol + "//" + window.location.host +"/");
-            }
-        })();
-        </script>
 
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
