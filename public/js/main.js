@@ -3,11 +3,13 @@ $(document).ready(function() {
 	var nicknameInput = $('#nickname-set .contents'),
 		textInput = $('#chat-text .contents'),
 		socket = io.connect('http://localhost'),
+		roomID = window.location.pathname.replace('/room/', ''),
 		chat_message_template = $('#chat-message-template').html(),
 		chat_messages_template = $('#chat-messages-template').html(),
 		user_joined_template = $('#user-joined-template').html(),
 		user_left_template = $('#user-left-template').html(),
-		nick_change_template = $('#nick-change-template').html();
+		nick_change_template = $('#nick-change-template').html(),
+		recent_rooms_template = $('#recent-rooms-template').html();
 	
 
 	//Check if nickname is stored in session, emit on init if found.
@@ -16,6 +18,9 @@ $(document).ready(function() {
 		socket.emit('set nickname', { nickname : session_nickname });
 		hideNickNameForm();
 	}
+
+	populateRecentRooms();
+
 
 	/* DOM Events */
 
@@ -78,6 +83,23 @@ $(document).ready(function() {
 
 	socket.on('ready', function (data) {
 		$('header textarea').val(window.location.href);
+
+		var recent_rooms = sessionStorage.getItem('recent_rooms'),
+			recent;
+
+		if (recent_rooms === null) {
+			recent = { "rooms" : [roomID] };
+			sessionStorage.setItem('recent_rooms', JSON.stringify(recent));
+		} else {
+			recent = JSON.parse(recent_rooms);
+			if (recent.rooms.indexOf(roomID) === -1)
+				recent.rooms.push(roomID);
+				if (recent.rooms.length > 5)
+					recent.rooms.splice(0, 1);
+				sessionStorage.setItem('recent_rooms', JSON.stringify(recent));
+
+		}
+		
 		//Disable chat input until this fires (this fires after nickname has been set).
 	});
 
@@ -181,16 +203,30 @@ $(document).ready(function() {
 
 			showNickNameForm();
 			hideChatMessageForm();
-			$('#nickname-toggle').hide()
+			$('#nickname-toggle').hide();
 			$('#cancel-nickname').show();
 
 		} else if (state === "hide") {
 
 			hideNickNameForm();
 			showChatMessageForm();
-			$('#nickname-toggle').show()
+			$('#nickname-toggle').show();
 			$('#cancel-nickname').hide();
 
+		}
+	}
+
+	function populateRecentRooms() {
+		var recent_rooms = sessionStorage.getItem('recent_rooms');
+		if (recent_rooms !== null) {
+			var recent = JSON.parse(recent_rooms);
+			var populatedTemplate = _.template(recent_rooms_template,
+				{
+					'rooms' : recent.rooms
+				}
+			);
+
+			$('#recent-rooms').append(populatedTemplate);
 		}
 	}
 

@@ -88,6 +88,13 @@ input {
     width: 170px;
     padding-left: 10px;
     overflow: hidden;
+    height: 310px;
+    overflow-y: auto;
+}
+
+#room_list h2 {
+    font-size: 16px;
+    margin: 0;
 }
 
 #room_list ul {

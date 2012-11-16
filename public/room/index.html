@@ -34,11 +34,16 @@
                 </div>
 
                 <div id="room_list">
+                    <h2>Users in room</h2>
                     <ul>
                         <li>DummyUser1</li>
                         <li>DummyUser2</li>
                         <li>DummyUser3</li>
                         <li>DummyUser4</li>
+                    </ul>
+
+                    <h2>Recent Rooms</h2>
+                    <ul id="recent-rooms">
                     </ul>
                 </div>
 
@@ -108,6 +113,12 @@
             <li>
                 <i><span class="nickname"><%= old_name %></span> changed their nickname to <span class="nickname"><%= new_name %></span>.</i>
             </li>
+        </script>
+
+        <script id="recent-rooms-template" type="text/underscore-template">
+            <% _.each(rooms, function(room) { %>
+                    <li><a href="/room/<%= room %>"><%= room %></a></li>
+            <% }); %>
         </script>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
