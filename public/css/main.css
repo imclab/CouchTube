@@ -119,6 +119,10 @@ header h1 {
     margin-bottom: 0;
 }
 
+header h1 a {
+    color: #333;
+}
+
 #nickname-toggle, #cancel-nickname {
     font-size: 11px;
 }

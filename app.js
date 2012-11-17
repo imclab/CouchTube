@@ -18,11 +18,6 @@ app.configure(function() {
 
 server.listen(3000);
 
-
-app.get('/room', function(req, res) {
-	console.log(req);
-});
-
 app.get('/room/new', function (req, res) {
 	var randomID = Math.round(Math.random()*10000000000).toString(36);
 	res.redirect('/room/'+randomID);
@@ -119,7 +114,6 @@ io.sockets.on('connection', function (socket) {
 						if (typeof(chatMembers[socketRoomID]) === "undefined")
 							chatMembers[socketRoomID] = [];
 
-						console.log('writing ', cleanNickname, 'to ', socketRoomID, '...');
 						chatMembers[socketRoomID].push(cleanNickname);
 						io.sockets.in(socketRoomID).emit('update room members', chatMembers[socketRoomID]);
 
@@ -133,7 +127,6 @@ io.sockets.on('connection', function (socket) {
 					socket.set('nickname', cleanNickname, function () {
 						io.sockets.in(socketRoomID).emit('user joined', { 'author' : cleanNickname });
 
-						console.log('writing ', cleanNickname, 'to ', socketRoomID, '...');
 						chatMembers[socketRoomID].push(cleanNickname);
 						io.sockets.in(socketRoomID).emit.emit('update room members', chatMembers[socketRoomID]);
 
@@ -149,8 +142,6 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('chat message', function (data) {
-
-		console.log(chatMembers);
 
 		var socketRoomID = null;
 		socket.get('room_id', function(err, id) {
