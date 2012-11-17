@@ -9,15 +9,9 @@ $(document).ready(function() {
 		user_joined_template = $('#user-joined-template').html(),
 		user_left_template = $('#user-left-template').html(),
 		nick_change_template = $('#nick-change-template').html(),
-		recent_rooms_template = $('#recent-rooms-template').html();
+		recent_rooms_template = $('#recent-rooms-template').html(),
+		room_members_template = $('#room-members-template').html();
 	
-
-	//Check if nickname is stored in session, emit on init if found.
-	var session_nickname = sessionStorage.getItem('nickname');
-	if (session_nickname !== null) {
-		socket.emit('set nickname', { nickname : session_nickname });
-		hideNickNameForm();
-	}
 
 	populateRecentRooms();
 
@@ -79,6 +73,13 @@ $(document).ready(function() {
 		}
 		sessionStorage.setItem("roomID", data.roomID);
 		socket.emit('room_join', { 'roomID' : data.roomID } );
+
+		//Check if nickname is stored in session, emit on init if found.
+		var session_nickname = sessionStorage.getItem('nickname');
+		if (session_nickname !== null) {
+			socket.emit('set nickname', { nickname : session_nickname });
+			hideNickNameForm();
+		}
 	});
 
 	socket.on('ready', function (data) {
@@ -167,6 +168,17 @@ $(document).ready(function() {
 
 		$('#chat').append(populatedTemplate);
 		chatScrollToBottom();
+	});
+
+	socket.on('update room members', function(data) {
+
+		var populatedTemplate = _.template(room_members_template,
+			{
+				'members' : data
+			}
+		);
+
+		$('#room-members').empty().html(populatedTemplate);
 	});
 
 

@@ -5,7 +5,8 @@ var	express = require('express'),
 	sanitize = require('validator').sanitize,
 	check = require('validator').check,
 	roomID = null,
-	chatHistories = {};
+	chatHistories = {},
+	chatMembers = [];
 
 __root = __dirname + '/public';
 
@@ -54,13 +55,26 @@ io.sockets.on('connection', function (socket) {
 		} else {
 			socket.emit('message history', chatHistories[data.roomID]);
 		}
+
 	});
 
 	//Also trigger this when someone just closes the window / direct disconnects
 	socket.on('room_leave', function(data) {
 		socket.get('nickname', function (err, name) {
+
 			io.sockets.in(data.roomID).emit('user left', { 'author' : name });
+
+			if (typeof(chatMembers[data.roomID]) === "undefined")
+				chatMembers[data.roomID] = [];
+
+			var index = chatMembers[data.roomID].indexOf(name);
+			if (index !== -1)
+				chatMembers[data.roomID].splice(index, 1);
+
+			io.sockets.in(data.roomID).emit('update room members', chatMembers[data.roomID]);
+
 			socket.leave(data.roomID);
+
 		});
 	});
 
@@ -68,6 +82,15 @@ io.sockets.on('connection', function (socket) {
 		socket.get('room_id', function(err, id) {
 			socket.get('nickname', function (err, name) {
 				io.sockets.in(id).emit('user left', { 'author' : name });
+
+				if (typeof(chatMembers[id]) === "undefined")
+					chatMembers[id] = [];
+
+				var index = chatMembers[id].indexOf(name);
+				if (index !== -1)
+					chatMembers[id].splice(index, 1);
+				
+				io.sockets.in(id).emit('update room members', chatMembers[id]);
 			});
 		});
 	});
@@ -85,21 +108,35 @@ io.sockets.on('connection', function (socket) {
 		socket.get('room_id', function(err, id) {
 
 			socketRoomID = id;
-
-			//if nickname edited, broadcast change
+			
 			socket.get('nickname', function (err, name) {
 
 				if (name === null) {
+
 					socket.set('nickname', cleanNickname, function () {
 						io.sockets.in(socketRoomID).emit('user joined', { 'author' : cleanNickname });
+
+						if (typeof(chatMembers[socketRoomID]) === "undefined")
+							chatMembers[socketRoomID] = [];
+
+						console.log('writing ', cleanNickname, 'to ', socketRoomID, '...');
+						chatMembers[socketRoomID].push(cleanNickname);
+						io.sockets.in(socketRoomID).emit('update room members', chatMembers[socketRoomID]);
+
 						socket.emit('ready');
 						
 					});
-				} else {
+
+				} else { //if nickname edited, broadcast change
 					io.sockets.in(socketRoomID).emit('nick change', { 'old_name' : name, 'new_name' : cleanNickname } );
 
 					socket.set('nickname', cleanNickname, function () {
 						io.sockets.in(socketRoomID).emit('user joined', { 'author' : cleanNickname });
+
+						console.log('writing ', cleanNickname, 'to ', socketRoomID, '...');
+						chatMembers[socketRoomID].push(cleanNickname);
+						io.sockets.in(socketRoomID).emit.emit('update room members', chatMembers[socketRoomID]);
+
 						socket.emit('ready');
 					});
 				}
@@ -112,6 +149,8 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('chat message', function (data) {
+
+		console.log(chatMembers);
 
 		var socketRoomID = null;
 		socket.get('room_id', function(err, id) {

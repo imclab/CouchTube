@@ -40,11 +40,7 @@
 
                 <div id="room_list">
                     <h2>Users in room</h2>
-                    <ul>
-                        <li>DummyUser1</li>
-                        <li>DummyUser2</li>
-                        <li>DummyUser3</li>
-                        <li>DummyUser4</li>
+                    <ul id="room-members">
                     </ul>
 
                     <h2>Recent Rooms</h2>
@@ -123,6 +119,12 @@
         <script id="recent-rooms-template" type="text/underscore-template">
             <% _.each(rooms, function(room) { %>
                     <li><a href="/room/<%= room %>"><%= room %></a></li>
+            <% }); %>
+        </script>
+
+        <script id="room-members-template" type="text/underscore-template">
+            <% _.each(members, function(member) { %>
+                <li><%= member %></li>
             <% }); %>
         </script>
 
