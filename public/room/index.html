@@ -27,7 +27,10 @@
 
         <header>
             <h1><a href="../">CouchTube</a></h1>
-            <p>Invite others to join this room — <textarea rows="1"></textarea></p>
+            <p>
+                Invite others to join this room — <textarea rows="1"></textarea>
+                <a href="/room/new/" class="btn btn-small">Create new room</a>
+            </p>
         </header>
 
         <div id="main">
@@ -35,10 +38,27 @@
             <div id="top">
 
                 <div id="youtube">
-                    <iframe width="560" height="315" src="http://www.youtube.com/embed/b0qAqu0v8xA" frameborder="0" allowfullscreen></iframe>
+                    <span class="loading_state">Loading...</span>
+                    <form id="init_youtube">
+                        <label>Paste a YouTube URL to start watching</label>
+                        <input type="text" placeholder="Youtube URL" class="url"/>
+                        <input type="submit" value="Submit" class="btn btn-inverse"/>
+                        <p class="invalid">Not recognised as a valid YouTube URL</p>
+                    </form>
+                    <iframe width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
                 </div>
 
                 <div id="room_list">
+
+                    <button class="btn btn-danger btn-small open">Set YouTube Video</button>
+
+                    <form id="set-youtube">
+                        <input type="text" class="url" placeholder="Youtube URL"/>
+                        <p class="invalid"><i>Not a valid YouTube URL</i></p>
+                        <input type="submit" class="btn btn-danger btn-small" value="Submit"/>
+                        <a href="#" class="cancel">Cancel</a>
+                    </form>
+
                     <h2>Users in room</h2>
                     <ul id="room-members">
                     </ul>
@@ -116,6 +136,12 @@
             </li>
         </script>
 
+        <script id="youtube-author-template" type="text/underscore-template">
+            <li>
+                <i><span class="nickname"><%= author %></span> set the current video to <a href="http://youtube.com/watch?v=<%= youtube_id %>" target="_blank">youtube.com/watch?v=<%= youtube_id %></a>.</i>
+            </li>
+        </script>
+
         <script id="recent-rooms-template" type="text/underscore-template">
             <% _.each(rooms, function(room) { %>
                     <li><a href="/room/<%= room %>"><%= room %></a></li>
@@ -131,9 +157,11 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="../js/vendor/jquery-1.8.2.min.js"><\/script>')</script>
 
+        <script src="../js/vendor/purl.min.js"></script>
         <script src="../js/vendor/ba-linkify.min.js"></script>
         <script src="../js/vendor/underscore-min.js"></script>
         <script src="../js/vendor/socket.io.min.js"></script>
+
         <script src="../js/main.js"></script>
 
         <script>

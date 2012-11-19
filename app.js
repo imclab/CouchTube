@@ -1,19 +1,18 @@
 var	express = require('express'),
 	app = require('express')(),
 	server = require('http').createServer(app),
-	io = require('socket.io').listen(server),
+	io = require('socket.io').listen(server, { log : false }),
 	sanitize = require('validator').sanitize,
 	check = require('validator').check,
 	roomID = null,
 	chatHistories = {},
-	chatMembers = [];
+	chatMembers = [],
+	chatVideo = [];
 
 __root = __dirname + '/public';
 
 app.configure(function() {
 	app.use(express.static('public'));
-	app.use(express.logger());
-    app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
 
 server.listen(3000);
@@ -32,6 +31,32 @@ app.get('/', function (req, res) {
 	res.sendfile('index.html');
 });
 
+var chatRoom = {
+
+	initChatHistories: function(roomId) {
+		if (typeof(chatHistories[roomId]) === "undefined") {
+			chatHistories[roomId] = [];
+		}
+	},
+
+	initChatMembers: function(roomId) {
+		if (typeof(chatMembers[roomId]) === "undefined") {
+			chatMembers[roomId] = [];
+		}
+	},
+
+	initChatVideo: function(roomId) {
+
+		if (typeof(roomId) === "undefined" || roomId === "" || roomId === null)
+			return;
+
+		if (typeof(chatVideo[roomId]) === "undefined") {
+			chatVideo[roomId] = [];
+		}
+	}
+
+};
+
 
 io.sockets.on('connection', function (socket) {
 
@@ -46,9 +71,15 @@ io.sockets.on('connection', function (socket) {
 		socket.set('room_id', data.roomID);
 
 		if (typeof(chatHistories[data.roomID]) === "undefined") {
-			chatHistories[data.roomID] = [];
+			chatRoom.initChatHistories(data.roomID);
 		} else {
 			socket.emit('message history', chatHistories[data.roomID]);
+		}
+		
+		if (typeof(chatVideo[data.roomID]) !== "undefined") {
+			socket.emit('existing video', { youtube_id : chatVideo[data.roomID].video_id, author : chatVideo[data.roomID].author } );
+		} else {
+			socket.emit('existing video', { youtube_id : null, author : null } );
 		}
 
 	});
@@ -59,8 +90,7 @@ io.sockets.on('connection', function (socket) {
 
 			io.sockets.in(data.roomID).emit('user left', { 'author' : name });
 
-			if (typeof(chatMembers[data.roomID]) === "undefined")
-				chatMembers[data.roomID] = [];
+			chatRoom.initChatMembers(data.roomID);
 
 			var index = chatMembers[data.roomID].indexOf(name);
 			if (index !== -1)
@@ -78,8 +108,7 @@ io.sockets.on('connection', function (socket) {
 			socket.get('nickname', function (err, name) {
 				io.sockets.in(id).emit('user left', { 'author' : name });
 
-				if (typeof(chatMembers[id]) === "undefined")
-					chatMembers[id] = [];
+				chatRoom.initChatMembers(id);
 
 				var index = chatMembers[id].indexOf(name);
 				if (index !== -1)
@@ -111,8 +140,8 @@ io.sockets.on('connection', function (socket) {
 					socket.set('nickname', cleanNickname, function () {
 						io.sockets.in(socketRoomID).emit('user joined', { 'author' : cleanNickname });
 
-						if (typeof(chatMembers[socketRoomID]) === "undefined")
-							chatMembers[socketRoomID] = [];
+						chatRoom.initChatMembers(socketRoomID);
+						chatRoom.initChatVideo(socketRoomID);
 
 						chatMembers[socketRoomID].push(cleanNickname);
 						io.sockets.in(socketRoomID).emit('update room members', chatMembers[socketRoomID]);
@@ -164,14 +193,26 @@ io.sockets.on('connection', function (socket) {
 
 				io.sockets.in(socketRoomID).emit('chat message', this_msg);
 
-				//Also put messages into session - for restoring room messages when a new user joins mid-conversation (or hard refresh etc)
-				if (typeof(chatHistories[socketRoomID]) === "undefined")
-					chatHistories[socketRoomID] = [];
+				//Put messages into session - for restoring room messages when a new user joins mid-conversation (or hard refresh etc)
+				chatRoom.initChatHistories(socketRoomID);
 
 				chatHistories[socketRoomID].push(this_msg);
 
 			});
 
+		});
+	});
+
+	socket.on('update video', function(video_data) {
+		socket.get('nickname', function(err, nickname) {
+			socket.get('room_id', function(err, id) {
+
+				console.log('set this:', 'chatVideo['+id+']');
+				chatVideo[id].video_id = video_data.video_id;
+				chatVideo[id].author = nickname;
+				io.sockets.in(id).emit('update video', { 'video_id' : video_data.video_id, 'author' : nickname } );
+
+			});
 		});
 	});
 

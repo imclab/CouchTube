@@ -52,6 +52,7 @@ input {
 
 #top {
     width: 740px;
+    height: 320px;
     overflow: hidden;
     border-bottom: 1px solid rgba(0,0,0,0.2);
 }
@@ -84,6 +85,42 @@ input {
     overflow: hidden;
 }
 
+#youtube form {
+    display: none;
+    text-align: center;
+    margin-top: 100px;
+}
+
+#youtube .invalid {
+    display: none;
+    color: red;
+    margin-top: 10px;
+    font-size: 10px;
+}
+
+#youtube form input {
+    margin: 0;
+}
+
+#youtube form {
+    visibility: hidden;
+}
+
+#youtube iframe {
+    visibility: hidden;
+}
+
+#youtube.initialized iframe {
+    display: block;
+}
+
+#youtube .loading_state {
+    display: block;
+}
+#youtube.initialized .loading_state {
+    display: none;
+}
+
 #room_list {
     width: 170px;
     padding-left: 10px;
@@ -100,6 +137,32 @@ input {
 #room_list ul {
     list-style: none;
     margin: 0;
+}
+
+#set-youtube {
+    display: none;
+}
+
+#set-youtube .open {
+    width: 100%;
+}
+
+#set-youtube input[type="text"] {
+    width: 156px;
+    font-size: 11px;
+}
+
+#set-youtube .invalid {
+    display: none;
+    color: red;
+    font-size: 10px;
+}
+
+#set-youtube .cancel {
+    float: right;
+    color: #333;
+    font-size: 11px;
+    margin-top: 2px;
 }
 
 header textarea {
@@ -121,6 +184,10 @@ header h1 {
 
 header h1 a {
     color: #333;
+}
+
+header p .btn {
+    float: right;
 }
 
 #nickname-toggle, #cancel-nickname {
