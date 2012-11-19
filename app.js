@@ -106,7 +106,7 @@ io.sockets.on('connection', function (socket) {
 			
 			socket.get('nickname', function (err, name) {
 
-				if (name === null) {
+				if (name === null) { //nickname was set for first time
 
 					socket.set('nickname', cleanNickname, function () {
 						io.sockets.in(socketRoomID).emit('user joined', { 'author' : cleanNickname });
@@ -121,14 +121,20 @@ io.sockets.on('connection', function (socket) {
 						
 					});
 
-				} else { //if nickname edited, broadcast change
+				} else { //nickname was edited
 					io.sockets.in(socketRoomID).emit('nick change', { 'old_name' : name, 'new_name' : cleanNickname } );
 
 					socket.set('nickname', cleanNickname, function () {
-						io.sockets.in(socketRoomID).emit('user joined', { 'author' : cleanNickname });
 
+						//remove old nickname from chatmembers
+						var toRemove = chatMembers[socketRoomID].indexOf(name);
+						chatMembers[socketRoomID].splice(toRemove, 1);
+
+						//add new nickname to chatmembers
 						chatMembers[socketRoomID].push(cleanNickname);
-						io.sockets.in(socketRoomID).emit.emit('update room members', chatMembers[socketRoomID]);
+
+						//broadcast nickname change to the room
+						io.sockets.in(socketRoomID).emit('update room members', chatMembers[socketRoomID]);
 
 						socket.emit('ready');
 					});
@@ -159,6 +165,9 @@ io.sockets.on('connection', function (socket) {
 				io.sockets.in(socketRoomID).emit('chat message', this_msg);
 
 				//Also put messages into session - for restoring room messages when a new user joins mid-conversation (or hard refresh etc)
+				if (typeof(chatHistories[socketRoomID]) === "undefined")
+					chatHistories[socketRoomID] = [];
+
 				chatHistories[socketRoomID].push(this_msg);
 
 			});
