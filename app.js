@@ -208,6 +208,8 @@ io.sockets.on('connection', function (socket) {
 			socket.get('room_id', function(err, id) {
 
 				console.log('set this:', 'chatVideo['+id+']');
+				if (typeof(chatVideo[id]) === "undefined")
+					chatVideo[id] = [];
 				chatVideo[id].video_id = video_data.video_id;
 				chatVideo[id].author = nickname;
 				io.sockets.in(id).emit('update video', { 'video_id' : video_data.video_id, 'author' : nickname } );

@@ -51,9 +51,11 @@ $(document).ready(function() {
 		},
 
 		recieveNewVideo: function(video_id, author) {
+
 			var embedURL = 'http://www.youtube.com/v/'+video_id+'?version=3&enablejsapi=1';
-			$('#youtube iframe').attr('src', embedURL);
+			$('#youtube iframe').attr('src', embedURL).show();
 			$('#youtube').addClass('initialized');
+			$('#init_youtube').hide();
 
 			//Todo: broadcast new video notification in chat
 			var populatedTemplate = _.template(youtube_author_template,
