@@ -175,6 +175,8 @@ header textarea {
     resize: none;
     font-size: 10px;
     font-family: 'Lucida Console', 'Arial';
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 header h1 {

@@ -2,7 +2,7 @@ $(document).ready(function() {
 
 	var nicknameInput = $('#nickname-set .contents'),
 		textInput = $('#chat-text .contents'),
-		socket = io.connect('http://localhost'),
+		socket = io.connect(window.location.protocol + '//' + window.location.host),
 		roomID = window.location.pathname.replace('/room/', ''),
 		chat_message_template = $('#chat-message-template').html(),
 		chat_messages_template = $('#chat-messages-template').html(),
