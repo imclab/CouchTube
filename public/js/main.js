@@ -31,7 +31,7 @@ $(document).ready(function() {
 			} else {
 
 				//video already set for room - embed it
-				var embedURL = 'http://www.youtube.com/v/'+youtube_id+'?version=3&enablejsapi=1';
+				var embedURL = 'http://www.youtube.com/v/'+youtube_id+'?version=3&enablejsapi=1&autoplay=1';
 				$('#youtube iframe').attr('src', embedURL).show().css('visibility', 'visible');
 
 				var populatedTemplate = _.template(youtube_author_template,
@@ -52,8 +52,8 @@ $(document).ready(function() {
 
 		recieveNewVideo: function(video_id, author) {
 
-			var embedURL = 'http://www.youtube.com/v/'+video_id+'?version=3&enablejsapi=1';
-			$('#youtube iframe').attr('src', embedURL).show();
+			var embedURL = 'http://www.youtube.com/v/'+video_id+'?version=3&enablejsapi=1&autoplay=1';
+			$('#youtube iframe').attr('src', embedURL).show().css('visibility', 'visible');
 			$('#youtube').addClass('initialized');
 			$('#init_youtube').hide();
 
@@ -255,6 +255,9 @@ $(document).ready(function() {
 	});
 
 	socket.on('user left', function(data) {
+		if (typeof(data.author) === 'undefined' || data.author === null)
+			return;
+
 		populatedTemplate = _.template(user_left_template,
 			{
 				'author' : data.author
