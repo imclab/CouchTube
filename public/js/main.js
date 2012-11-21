@@ -32,7 +32,7 @@ $(document).ready(function() {
 
 				//video already set for room - embed it
 				var embedURL = 'http://www.youtube.com/v/'+youtube_id+'?version=3&enablejsapi=1';
-				$('#youtube iframe').attr('src', embedURL);
+				$('#youtube iframe').attr('src', embedURL).show().css('visibility', 'visible');
 
 				var populatedTemplate = _.template(youtube_author_template,
 					{
@@ -93,6 +93,10 @@ $(document).ready(function() {
 
 		var nickname = nicknameInput.val();
 		socket.emit('set nickname', { nickname : nickname });
+
+		$('.init_nickname_notice').hide();
+		$('#init_youtube').removeClass('faded');
+		$('#youtube iframe').removeClass('faded');
 
 		setNicknameFormTo("hide");
 
@@ -204,6 +208,10 @@ $(document).ready(function() {
 		if (session_nickname !== null) {
 			socket.emit('set nickname', { nickname : session_nickname });
 			hideNickNameForm();
+		} else {
+			$('#init_youtube').addClass('faded');
+			$('#youtube iframe').addClass('faded');
+			$('.init_nickname_notice').show().css('display', 'block');
 		}
 	});
 

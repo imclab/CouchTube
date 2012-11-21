@@ -89,6 +89,7 @@ input {
     display: none;
     text-align: center;
     margin-top: 100px;
+    opacity: 1;
 }
 
 #youtube .invalid {
@@ -204,4 +205,16 @@ header p .btn {
     font-size: 12px;
     margin-top: 10px;
     color: red;
+}
+
+.init_nickname_notice {
+    display: none;
+    font-size: 19px;
+    position: absolute;
+    margin-left: 110px;
+    margin-top: 140px;
+}
+
+#init_youtube.faded, #youtube iframe.faded {
+    opacity: 0.1;
 }

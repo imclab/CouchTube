@@ -23,8 +23,10 @@ app.get('/room/new', function (req, res) {
 });
 
 app.get('/room/:id', function (req, res) {
+	res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 	res.sendfile(__root + '/room/index.html');
 	roomID = req.params.id;
+	console.log('served', roomID);
 });
 
 app.get('/', function (req, res) {
@@ -60,10 +62,6 @@ var chatRoom = {
 
 io.sockets.on('connection', function (socket) {
 
-	//Todo:
-	//	Only broadcast `user joined` if user wasn't already in room
-	//		--> Need manageable list of users in room, suggest just an array using room id as index
-
 	socket.emit('room_init', { 'roomID' : roomID } );
 
 	socket.on('room_join', function(data) {
@@ -84,7 +82,6 @@ io.sockets.on('connection', function (socket) {
 
 	});
 
-	//Also trigger this when someone just closes the window / direct disconnects
 	socket.on('room_leave', function(data) {
 		socket.get('nickname', function (err, name) {
 
@@ -138,6 +135,7 @@ io.sockets.on('connection', function (socket) {
 				if (name === null) { //nickname was set for first time
 
 					socket.set('nickname', cleanNickname, function () {
+						console.log(cleanNickname, 'joined room', socketRoomID);
 						io.sockets.in(socketRoomID).emit('user joined', { 'author' : cleanNickname });
 
 						chatRoom.initChatMembers(socketRoomID);
@@ -207,7 +205,6 @@ io.sockets.on('connection', function (socket) {
 		socket.get('nickname', function(err, nickname) {
 			socket.get('room_id', function(err, id) {
 
-				console.log('set this:', 'chatVideo['+id+']');
 				if (typeof(chatVideo[id]) === "undefined")
 					chatVideo[id] = [];
 				chatVideo[id].video_id = video_data.video_id;
