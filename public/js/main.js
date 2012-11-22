@@ -391,3 +391,7 @@ $(document).ready(function() {
 	}
 
 });
+
+function onYouTubePlayerReady(playerId) {
+	ytplayer = document.getElementById("ytframe");
+}

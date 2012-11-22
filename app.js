@@ -1,7 +1,7 @@
 var	express = require('express'),
 	app = require('express')(),
 	server = require('http').createServer(app),
-	io = require('socket.io').listen(server, { log : false }),
+	io = require('socket.io').listen(server, { log : true }),
 	sanitize = require('validator').sanitize,
 	check = require('validator').check,
 	roomID = null,
