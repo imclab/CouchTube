@@ -189,6 +189,7 @@ $(document).ready(function() {
 
 		$('#room_list .btn.open').show();
 		$('#set-youtube').hide();
+		$('#set-youtube .url').val('');
 	});
 
 
