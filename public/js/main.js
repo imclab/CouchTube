@@ -48,11 +48,12 @@ var app = {
 
 			$('#youtube').addClass('initialized');
 
+
 			this.player = new YT.Player('ytframe', {
 				height: '390',
 				width: '640',
 				playerVars: { 'autoplay': 1 },
-				videoId: this.pending_id
+				videoId: id
 			});
 
 			var youtube_author_template = $('#youtube-author-template').html();
@@ -267,6 +268,7 @@ $(document).ready(function() {
 		}
 
 		$('#init_youtube .invalid').hide();
+		$('#init_youtube').hide();
 		app.YouTube.sendNewVideo(videoID);
 	});
 
