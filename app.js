@@ -1,6 +1,6 @@
 var	express = require('express'),
 	app = require('express')(),
-	exports.server = require('http').createServer(app),
+	server = require('http').createServer(app),
 	io = require('socket.io').listen(server, { log : false }),
 	sanitize = require('validator').sanitize,
 	check = require('validator').check,
@@ -8,6 +8,8 @@ var	express = require('express'),
 	chatHistories = {},
 	chatMembers = [],
 	chatVideo = [];
+
+exports = module.exports = server;
 
 __root = __dirname + '/public';
 
