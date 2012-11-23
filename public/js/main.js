@@ -313,6 +313,15 @@ $(document).ready(function() {
 
 /* Expose socket Events */
 
+app.socket.on('existing video', function(data) {
+	if (typeof(data.youtube_id) === "undefined" || data.youtube_id === null) {
+		app.YouTube.init(null, null);
+	} else {
+		app.YouTube.pending_id = data.youtube_id;
+		app.YouTube.pending_author = data.author;
+	}
+});
+
 app.socket.on('room_init', function(data) {
 	var currentRoomID = sessionStorage.getItem("roomID");
 	if (currentRoomID !== null && (currentRoomID !== data.roomID)) {
@@ -442,14 +451,4 @@ app.socket.on('update room members', function(data) {
 
 app.socket.on('update video', function(data) {
 	app.YouTube.recieveNewVideo(data.video_id, data.author);
-});
-
-app.socket.on('existing video', function(data) {
-	if (typeof(data.youtube_id) === "undefined") {
-		app.YouTube.init(null, null);
-	} else {
-		app.YouTube.pending_id = data.youtube_id;
-		app.YouTube.pending_author = data.author;
-		//app.YouTube.init(data.youtube_id, data.author);
-	}
 });
