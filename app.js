@@ -9,10 +9,6 @@ var	express = require('express'),
 	chatMembers = [],
 	chatVideo = [];
 
-module.exports = function() {
-	server.listen(8000);
-};
-
 __root = __dirname + '/public';
 
 app.configure(function() {
@@ -227,3 +223,5 @@ function strip_tags (input, allowed) {
     return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
   });
 }
+
+server.listen(3000);
