@@ -218,3 +218,8 @@ header p .btn {
 #init_youtube.faded, #youtube iframe.faded {
     opacity: 0.1;
 }
+
+#ytframe {
+    width: 560px;
+    height: 315px;
+}
