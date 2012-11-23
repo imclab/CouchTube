@@ -1,7 +1,6 @@
 var	express = require('express'),
 	app = require('express')(),
 	server = require('http').createServer(app),
-	httpProxy = require('http-proxy'),
 	io = require('socket.io').listen(server, { log : false }),
 	sanitize = require('validator').sanitize,
 	check = require('validator').check,
