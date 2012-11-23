@@ -1,6 +1,7 @@
 var	express = require('express'),
 	app = require('express')(),
 	server = require('http').createServer(app),
+	httpProxy = require('http-proxy'),
 	io = require('socket.io').listen(server, { log : false }),
 	sanitize = require('validator').sanitize,
 	check = require('validator').check,
@@ -15,7 +16,7 @@ app.configure(function() {
 	app.use(express.static('public'));
 });
 
-server.listen(80);
+server.listen(3000);
 
 app.get('/room/new', function (req, res) {
 	var randomID = Math.round(Math.random()*10000000000).toString(36);
