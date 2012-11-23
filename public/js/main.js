@@ -44,6 +44,9 @@ var app = {
 
 		initPlayer: function(id, author) {
 
+			//Todo: investigate why the topic is broadcasted upon nickname change.
+			//More details: seems like this function is called more than once; loadVideoById method dissapears
+
 			console.log('playing', id, author);
 
 			$('#youtube').addClass('initialized');
@@ -59,6 +62,7 @@ var app = {
 			var youtube_author_template = $('#youtube-author-template').html();
 
 			$('#ytframe').show().css('visibility', 'visible');
+
 
 			var populatedTemplate = _.template(app.templates.youtube_author_template,
 				{
@@ -88,7 +92,6 @@ var app = {
 			$('#youtube').addClass('initialized');
 			$('#init_youtube').hide();
 
-			//Todo: broadcast new video notification in chat
 			var populatedTemplate = _.template(app.templates.youtube_author_template,
 				{
 					'youtube_id' : video_id,
@@ -198,6 +201,9 @@ $(document).ready(function() {
 
 	$('#chat-text').submit(function(e) {
 		e.preventDefault();
+		if (textInput.val() === '') {
+			return;
+		}
 		app.socket.emit('chat message', { contents: textInput.val() });
 		textInput.val('');
 	});

@@ -186,6 +186,10 @@ io.sockets.on('connection', function (socket) {
 					'room_id' : socketRoomID
 				};
 
+				if (this_msg.contents === '') {
+					return;
+				}
+
 				io.sockets.in(socketRoomID).emit('chat message', this_msg);
 
 				//Put messages into session - for restoring room messages when a new user joins mid-conversation (or hard refresh etc)
