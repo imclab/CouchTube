@@ -76,6 +76,11 @@ var app = {
 
 		recieveNewVideo: function(video_id, author) {
 
+			if (this.player === null) {
+				this.initPlayer(video_id, author);
+				return;
+			}
+
 			this.player.loadVideoById(video_id);
 			$('#ytframe').show().css('visibility', 'visible');
 
