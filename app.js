@@ -9,15 +9,15 @@ var	express = require('express'),
 	chatMembers = [],
 	chatVideo = [];
 
-exports = module.exports = server;
+module.exports = function() {
+	server.listen(8000);
+};
 
 __root = __dirname + '/public';
 
 app.configure(function() {
 	app.use(express.static('public'));
 });
-
-//server.listen(8000);
 
 app.get('/room/new', function (req, res) {
 	var randomID = Math.round(Math.random()*10000000000).toString(36);
