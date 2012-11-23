@@ -17,7 +17,7 @@ app.configure(function() {
 	app.use(express.static('public'));
 });
 
-server.listen(8000);
+//server.listen(3333);
 
 app.get('/room/new', function (req, res) {
 	var randomID = Math.round(Math.random()*10000000000).toString(36);
