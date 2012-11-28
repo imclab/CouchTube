@@ -2,6 +2,22 @@
    Author's custom styles / Samuel Brown (@samuelgbrown)
    ========================================================================== */
 
+#landing {
+    margin-top: 100px;
+    text-align: center;
+}
+
+#landing .diagnose {
+    font-size: 12px;
+}
+
+#landing .diagnose.full {
+    color: green;
+}
+#landing .diagnose.half {
+    color: grey;
+}
+
 
 #chat-text {display:none;}
 #nickname-set .invalid {display:none;}
