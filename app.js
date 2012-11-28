@@ -228,4 +228,4 @@ function strip_tags (input, allowed) {
   });
 }
 
-server.listen(3000);
+server.listen(80);
