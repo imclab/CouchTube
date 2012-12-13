@@ -37,11 +37,6 @@
 
 	YouTube.prototype.initPlayer = function(id, author) {
 
-		//Todo: investigate why the topic is broadcasted upon nickname change.
-		//More details: seems like this function is called more than once; loadVideoById method dissapears
-
-		console.log('playing', id, author);
-
 		$('#youtube').addClass('initialized');
 
 

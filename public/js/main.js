@@ -129,7 +129,6 @@ $(document).ready(function() {
 
 		app.domUtils.setNicknameFormTo("hide");
 
-		//Todo: show nickname somewhere
 		sessionStorage.setItem("nickname", nickname);
 	});
 
@@ -280,8 +279,6 @@ app.socket.on('ready', function (data) {
 
 	}
 	
-	//Todo:
-	//Disable youtube init form until this fires
 });
 
 app.socket.on('invalid nickname', function() {
