@@ -15,27 +15,6 @@ var app = {
 
 		loadingStatus: { 'dom' : false, 'youtube_api' : false },
 
-		init: function(youtube_id, author) {
-			$('#youtube').addClass('initialized');
-
-			if (youtube_id === null) {
-
-				//video not yet set for room - show init form
-				$('#ytframe').hide();
-				$('#init_youtube').show().css('visibility', 'visible');
-
-			} else {
-
-				pending_id = youtube_id;
-			}
-		},
-
-		onYouTubeAPIReady: function() {
-			this.loadingStatus.youtube_api = true;
-			if (this.pending_id && this.pending_author && this.pending_id && this.pending_author && this.loadingStatus.dom === true)
-				this.initPlayer(this.pending_id, this.pending_author);
-		},
-
 		onDomReady: function() {
 			this.loadingStatus.dom = true;
 			if (this.pending_id && this.pending_author && this.pending_id && this.pending_author && this.loadingStatus.youtube_api === true)
@@ -169,6 +148,28 @@ var app = {
 
 	templates: {}
 
+};
+
+YouTube.prototype.init = function(youtube_id, author) {
+	$('#youtube').addClass('initialized');
+
+	if (youtube_id === null) {
+
+		//video not yet set for room - show init form
+		$('#ytframe').hide();
+		$('#init_youtube').show().css('visibility', 'visible');
+
+	} else {
+
+		pending_id = youtube_id;
+	}
+};
+
+
+YouTube.prototype.onYouTubeAPIReady = function() {
+	this.loadingStatus.youtube_api = true;
+	if (this.pending_id && this.pending_author && this.pending_id && this.pending_author && this.loadingStatus.dom === true)
+		this.initPlayer(this.pending_id, this.pending_author);
 };
 
 
