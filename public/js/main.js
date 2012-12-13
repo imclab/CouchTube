@@ -193,6 +193,9 @@ $(document).ready(function() {
 	
 	$('#set-youtube').submit(function(e) {
 		e.preventDefault();
+
+		$('#init_youtube').hide();
+
 		var videoURL = $.url($(this).children('.url').val());
 
 		if (videoURL.attr('host') === "youtube.com" || videoURL.attr('host') === "www.youtube.com") {
