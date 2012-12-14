@@ -1,3 +1,5 @@
+/* Author: Samuel Brown */
+
 //Global app object containing YouTube (Player related funcitonality), domUtils (DOM operations, style functions) and templates (templates used with underscore)
 var app = {
 
@@ -70,8 +72,6 @@ var app = {
 	templates: {}
 
 };
-
-
 
 
 function onYouTubeIframeAPIReady() {

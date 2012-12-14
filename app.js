@@ -1,3 +1,5 @@
+/* Author: Samuel Brown */
+
 var	express = require('express'),
 	app = require('express')(),
 	server = require('http').createServer(app),

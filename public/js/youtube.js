@@ -1,3 +1,4 @@
+/* Author: Samuel Brown */
 (function() {
 
 	var YouTube = function() {};
